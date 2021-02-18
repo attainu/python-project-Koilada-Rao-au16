@@ -3,10 +3,40 @@ from pathlib import Path
 
 
 class Exten:
-    def extension(self, dir_path, File_extension, all_files):
-        for files in all_files:
-            file_path = Path(files)
-            removing_dot = file_path.suffix.lower()
-            removing_dot = removing_dot[1::]
-            File_extension.append(removing_dot)
+    def extension(self, DIR_PATH, File_extension, ALL_FILES):
+        for FILES in ALL_FILES:
+            file_path = Path(FILES)
+            file_format = file_path.suffix.lower()
+            file_format = file_format[1::]
+            File_extension.append(file_format)
 
+    def directoryCreation(self, File_extension, DIR_PATH):
+        for D in File_extension:
+            directories_path = os.path.join(DIR_PATH, D)
+            directories_path = Path(directories_path)
+            directories_path.mkdir(exist_ok = True)
+
+    def movables(self, ALL_FILES, DIR_PATH):
+        for FILES in ALL_FILES:
+            file_path = Path(FILES)
+            EXTENSION = file_path.suffix.lower()
+            EXTENSION = EXTENSION[1::]
+            old_path = os.path.join(DIR_PATH, file_path)
+            new_path = os.path.join(DIR_PATH, EXTENSION, FILES)
+            os.rename(old_path, new_path)
+
+    def extrafolder(self, DIR_PATH):
+        folders = list(os.walk(DIR_PATH))[1:]
+        for folder in folders:
+            if not folder[2]:
+                os.rmdir(folder[0])
+
+
+def ext(DIR_PATH):
+    ALL_FILES = os.listdir(DIR_PATH)
+    File_extension = []
+    obj = Exten()
+    obj.extension(DIR_PATH, File_extension, ALL_FILES)
+    obj.directoryCreation(File_extension, DIR_PATH)
+    obj.movables(ALL_FILES, DIR_PATH)
+    obj.extrafolder(DIR_PATH)
